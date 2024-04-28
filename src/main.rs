@@ -19,6 +19,10 @@ impl EventHandler for Handler {
         }
 
         let command : String = msg.content.clone().split_off(self.command_identifier.len()).split(" ").next().unwrap().to_string();
+        
+        //idk why but I need to make a variable for msg clone first before splitting it
+        let msg_clone = msg.content.clone();
+        let arguments : Vec<&str> = msg_clone.split(' ').collect();
 
         println!("Command received: {}, from user: {}", &command, &msg.author.name);
 
@@ -33,13 +37,27 @@ impl EventHandler for Handler {
 
             if input.len() == 0 {
                 if let Err(e) = msg.channel_id.say(&ctx.http, "No arguments received.").await {
-                    println!("Something wen't wrong trying to send a message: {e:?}")
+                    println!("Something wen't wrong trying to send a message: {e:?}");
                 }
                 return;
             }
             
             if let Err(e) = msg.channel_id.say(&ctx.http, modules::functions::randomcase(input)).await {
-                println!("Something wen't wrong trying to send a message: {e:?}")
+                println!("Something wen't wrong trying to send a message: {e:?}");
+            }
+        }
+
+        if &command == "add" {
+            let mut out : i128 = 0;
+            for arg in arguments {
+                match arg.parse::<i128>() {
+                    Ok(num) => {out += num;}
+                    Err(_) => {}
+                }
+            }
+
+            if let Err(e) = msg.channel_id.say(&ctx.http, format!("``{out}``")).await {
+                println!("Something wen't wrong trying to send a message: {e:?}");
             }
         }
     }

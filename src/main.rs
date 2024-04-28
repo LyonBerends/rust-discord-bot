@@ -53,8 +53,8 @@ async fn main() {
             println!("Config loaded.");
             config = c;
         }
-        Err(c) => {
-            println!("{}", c);
+        Err(e) => {
+            println!("Error loading config: {e:?}");
             return;
         }
     }

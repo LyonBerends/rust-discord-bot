@@ -10,9 +10,11 @@ pub fn load_config() -> Result<Config, &'static str>
     match file {
         Ok(f) => {
             let reader = BufReader::new(f);
-            let config : Config = json::from_reader(reader).unwrap();
-            return Ok(config);
+            match json::from_reader(reader) {
+                Ok(config) => {Ok(config)}
+                Err(_) => {Err("Something wen't wrong while trying to parse JSON from config.json")}
+            }
         }
-        Err(_) => {return Err("Failed to read/parse config.json");}
+        Err(_) => {Err("There is no config.json file")}
     }
 }
